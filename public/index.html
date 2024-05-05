@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detecção de Vazamento de Água</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #dados {
+            margin-top: 20px;
+        }
+        #dados p {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detecção de Vazamento de Água</h1>
+    <div id="dados">
+        <p><strong>Litros por minuto:</strong> <span id="litrosPorMinuto">-</span></p>
+        <p><strong>Gasto total de litros:</strong> <span id="gastoTotalLitros">-</span></p>
+        <p><strong>Metros cúbicos totais:</strong> <span id="metrosCubicosTotais">-</span></p>
+        <p><strong>R$:</strong> <span id="custoAgua">-</span></p>
+        <p id="alerta" style="color: red; font-weight: bold;"></p>
+    </div>
+
+    <script>
+        function atualizarDados() {
+            fetch('/dados') // Rota para obter os dados do ESP8266
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('litrosPorMinuto').innerText = data.litrosPorMinuto;
+                    document.getElementById('gastoTotalLitros').innerText = data.gastoTotalLitros;
+                    document.getElementById('metrosCubicosTotais').innerText = data.metrosCubicosTotais;
+                    document.getElementById('custoAgua').innerText = data.custoAgua;
+                    document.getElementById('alerta').innerText = data.alerta;
+                })
+                .catch(error => console.error('Erro ao atualizar dados:', error));
+        }
+
+        setInterval(atualizarDados, 5000); // Atualizar os dados a cada 5 segundos
+    </script>
+</body>
+</html>
