@@ -3,49 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detecção de Vazamento de Água</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        #dados {
-            margin-top: 20px;
-        }
-        #dados p {
-            margin-bottom: 5px;
-        }
-    </style>
+    <title>Atualização Automática</title>
 </head>
 <body>
     <h1>Detecção de Vazamento de Água</h1>
-    <div id="dados">
-        <p><strong>Litros por minuto:</strong> <span id="litrosPorMinuto">-</span></p>
-        <p><strong>Gasto total de litros:</strong> <span id="gastoTotalLitros">-</span></p>
-        <p><strong>Metros cúbicos totais:</strong> <span id="metrosCubicosTotais">-</span></p>
-        <p><strong>R$:</strong> <span id="custoAgua">-</span></p>
-        <p id="alerta" style="color: red; font-weight: bold;"></p>
+    <div id="dados-container">
+        <!-- Aqui os dados atualizados serão exibidos -->
     </div>
 
     <script>
-        function atualizarDados() {
-            fetch('/dados') // Rota para obter os dados do ESP8266
+        function carregarDados() {
+            fetch('/dados')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('litrosPorMinuto').innerText = data.litrosPorMinuto;
-                    document.getElementById('gastoTotalLitros').innerText = data.gastoTotalLitros;
-                    document.getElementById('metrosCubicosTotais').innerText = data.metrosCubicosTotais;
-                    document.getElementById('custoAgua').innerText = data.custoAgua;
-                    document.getElementById('alerta').innerText = data.alerta;
+                    // Atualize a interface do usuário com os novos dados
+                    const dadosContainer = document.getElementById('dados-container');
+                    dadosContainer.innerHTML = `
+                        <p>Litros por minuto: ${data.litrosPorMinuto}</p>
+                        <p>Gasto total de litros: ${data.gastoTotalLitros}</p>
+                        <p>Metros cúbicos totais: ${data.metrosCubicosTotais}</p>
+                        <p>Custo total de água R$: ${data.custoAgua}</p>
+                        <p>${data.alerta}</p>
+                    `;
                 })
-                .catch(error => console.error('Erro ao atualizar dados:', error));
+                .catch(error => console.error('Erro ao obter dados:', error));
         }
 
-        setInterval(atualizarDados, 5000); // Atualizar os dados a cada 5 segundos
+        // Carrega os dados pela primeira vez
+        carregarDados();
+
+        // Atualiza os dados a cada 5 segundos
+        setInterval(carregarDados, 1000);
     </script>
 </body>
 </html>
