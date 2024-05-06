@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 80;
 
 // Definir as variáveis fora do escopo da função de rota
 let fluxoAcumulado = 0;
