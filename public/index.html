@@ -3,37 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atualização Automática</title>
+    <title>Seu Título</title>
 </head>
 <body>
+
     <h1>Detecção de Vazamento de Água</h1>
-    <div id="dados-container">
-        <!-- Aqui os dados atualizados serão exibidos -->
+
+     <!-- Contêiner para exibir os dados -->
+     <div id="dadosContainer" style="display: none;">
+    </div>
+    <button id="btnConectar" onclick="toggleAtualizacao()">Conectar</button>
+
+   
+
+    <!-- Histórico de dados -->
+    <div id="historicoDados" style="display: none;">
+        <h2>Histórico de Alerta</h2>
+        <ul id="listaHistorico"></ul>
+
+        
     </div>
 
     <script>
+        // Conteúdo do container.js e historico.js
+
+        let intervaloAtualizacao;
+        
+        const historico = []; // Define a variável historico aqui
+
+        // Função para carregar os dados
         function carregarDados() {
             fetch('/dados')
                 .then(response => response.json())
                 .then(data => {
-                    // Atualize a interface do usuário com os novos dados
-                    const dadosContainer = document.getElementById('dados-container');
-                    dadosContainer.innerHTML = `
-                        <p>Litros por minuto: ${data.litrosPorMinuto}</p>
-                        <p>Gasto total de litros: ${data.gastoTotalLitros}</p>
-                        <p>Metros cúbicos totais: ${data.metrosCubicosTotais}</p>
-                        <p>Custo total de água R$: ${data.custoAgua}</p>
-                        <p>${data.alerta}</p>
+                    // Exibe os dados
+                    document.getElementById('dadosContainer').innerHTML = `
+                        <p>Litros por Minuto: ${data.litrosPorMinuto}</p>
+                        <p>Total Gasto em Litros: ${data.gastoTotalLitros}</p>
+                        <p>Metros Cúbicos Totais: ${data.metrosCubicosTotais}</p>
+                        <p>Custo Total de Água: R$${data.custoAgua}</p>
+                      
                     `;
+                    // Exibe o contêiner
+                    document.getElementById('dadosContainer').style.display = 'block';
+
+                    // Se houver um alerta, adiciona ao histórico e armazena os dados
+                    if (data.alerta) {
+                        
+                        armazenarDados(data);
+                    }
                 })
-                .catch(error => console.error('Erro ao obter dados:', error));
+                .catch(error => {
+                    console.error('Erro ao obter dados:', error);
+                });
         }
 
-        // Carrega os dados pela primeira vez
-        carregarDados();
+        // Função para armazenar os dados
+        function armazenarDados(data) {
+            document.getElementById('historicoDados').style.display = 'block';
+            // Obtém a data e hora atual
+            const now = new Date();
+            // Formata a data e hora para exibição
+            const timestamp = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+            
+            // Cria uma entrada para o histórico com as informações relevantes
+            const historicoEntry = {
+                timestamp: timestamp,
+                gastoTotalLitros: data.gastoTotalLitros,
+                metrosCubicosTotais: data.metrosCubicosTotais,
+                custoAgua: data.custoAgua,
+                alerta: data.alerta // Adiciona a mensagem de alerta ao histórico
+            };
+            // Adiciona a entrada ao histórico
+            historico.push(historicoEntry);
+            // Atualiza o histórico na interface
+            atualizarHistorico();
+        }
 
-        // Atualiza os dados a cada 5 segundos
-        setInterval(carregarDados, 1000);
+        // Função para atualizar o histórico na interface
+        function atualizarHistorico() {
+            const listaHistorico = document.getElementById('listaHistorico');
+            const listaAlertas = document.getElementById('listaHistorico');
+            // Limpa as listas atuais
+            listaHistorico.innerHTML = '';
+            listaAlertas.innerHTML = '';
+            // Adiciona cada entrada do histórico à lista
+            historico.forEach(entry => {
+                if (entry.alerta) {
+                    const alertaItem = document.createElement('li');
+                    alertaItem.textContent = `${entry.timestamp}: ${entry.alerta}`;
+                    listaAlertas.appendChild(alertaItem);
+                }
+                const listItem = document.createElement('li');
+                listItem.textContent = ` Gasto Total Litros: ${entry.gastoTotalLitros}, Metros Cúbicos Totais: ${entry.metrosCubicosTotais}, Custo de Água: ${entry.custoAgua}`; // Aqui incluímos a mensagem de alerta
+                listItem.style.margin = '0px 0px 15px 0px';
+                listaHistorico.appendChild(listItem);
+                // Se houver um alerta, adiciona ao histórico de alertas
+                
+            });
+        }
+
+        // Função para alternar a atualização dos dados
+        function toggleAtualizacao() {
+            if (intervaloAtualizacao) {
+                // Se já estiver atualizando, para a atualização
+                clearInterval(intervaloAtualizacao);
+                intervaloAtualizacao = null;
+                document.getElementById('btnConectar').textContent = 'Conectar';
+            } else {
+                // Exibe "Conectando" por 1 segundo antes de iniciar a atualização
+                document.getElementById('btnConectar').textContent = 'Conectando...';
+                setTimeout(() => {
+                    carregarDados(); // Carrega os dados imediatamente ao iniciar
+                    intervaloAtualizacao = setInterval(carregarDados, 1000);
+                    document.getElementById('btnConectar').textContent = 'Desconectar';
+                }, 1000);
+            }
+        }
     </script>
 </body>
 </html>
