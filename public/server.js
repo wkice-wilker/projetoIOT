@@ -10,9 +10,24 @@ let calculoVazaoAcumulado = 0;
 let metroCubicoAcumulado = 0;
 let contaDeAguaAcumulada = 0;
 
+
+
 // Rota para servir a página HTML
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
+});
+
+// Rota para servir o arquivo CSS
+app.get('/styles.css', (req, res) => {
+    res.setHeader('Content-Type', 'text/css'); // Definir o tipo MIME como text/css
+    res.sendFile(__dirname + '/styles.css');
+});
+
+let contador = 0;
+
+app.post('/zerarContador', (req, res) => {
+    contador = 0;
+    res.send('Contador zerado com sucesso!');
 });
 
 // Rota para fornecer os dados simulados
