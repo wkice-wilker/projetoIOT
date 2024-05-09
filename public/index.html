@@ -12,17 +12,16 @@
     <div class="fundo"></div>
     <div class="container-card">
         <h1>Detecção de Vazamento de Água</h1>
-
-        <!-- Contêiner para exibir os dados -->
-        <div class="dados" id="dadosContainer" style="display: none;">
-        </div>
-
-        <button id="btnZerar" onclick="zerarLitrosPorMinuto()">Zerar Litros por Minuto</button>
+        
+            <!-- Contêiner para exibir os dados -->
+            <div class="dados" id="dadosContainer" style="display: none;">
+            </div>
+        
 
 
         <div class="container">
             <input id="checkbox" type="checkbox">
-            <label class="button" for="checkbox" onclick="toggleAtualizacao()">
+            <label class="button " for="checkbox" onclick="toggleAtualizacao()">
                 <span class="icon">
                     <svg viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -73,21 +72,22 @@
                 .then(data => {
                     // Exibe os dados
                     document.getElementById('dadosContainer').innerHTML = `
-                    <p>Litros por Minuto: ${data.litrosPorMinuto}</p>
-                    <progress max="10" value="${data.litrosPorMinuto}"></progress>
+                    <p class="card"><span>${data.litrosPorMinuto}</span>Litros por Minuto
+                    <progress class="progress" max="10" value="${data.litrosPorMinuto}"></progress></p>
 
-                    <p>Total Gasto em Litros: ${data.gastoTotalLitros}</p>
-                    <progress max="100" value="${data.gastoTotalLitros}"></progress>
+                    <p class="card"><span>${data.gastoTotalLitros}</span>Total Gasto em Litros 
+                    <progress max="100" value="${data.gastoTotalLitros}"></progress></p>
 
-                    <p>Metros Cúbicos Totais: ${data.metrosCubicosTotais}</p>
-                    <progress max="100" value="${data.metrosCubicosTotais}"></progress>
+                    <p class="card"><span>${data.metrosCubicosTotais}</span>Metros Cúbicos Totais 
+                    <progress max="100" value="${data.metrosCubicosTotais}"></progress></p>
 
-                    <p>Custo Total de Água: R$${data.custoAgua}</p>
-                    <progress max="100" value="${data.custoAgua}"></progress>
+                    <p class="card"><span>R$${data.custoAgua}</span>Custo Total de Água 
+                    <progress max="100" value="${data.custoAgua}"></progress></p>
                       
                     `;
+
                     // Exibe o contêiner
-                    document.getElementById('dadosContainer').style.display = 'block';
+                    document.getElementById('dadosContainer').style.display = 'flex';
 
                     // Se houver um alerta, adiciona ao histórico e armazena os dados
                     if (data.alerta) {
@@ -100,7 +100,7 @@
                 });
         }
 
-        
+
         // Função para armazenar os dados
         function armazenarDados(data) {
             document.getElementById('historicoDados').style.display = 'block';
@@ -146,39 +146,36 @@
             });
         }
 
-        function zerarLitrosPorMinuto() {
-            fetch('/zerarContador', {
-                method: 'POST'
-            })
-                .then(response => response.text())
-                .then(message => {
-                    console.log(message); // Exibe a mensagem de confirmação no console
-                })
-                .catch(error => {
-                    console.error('Erro ao zerar o contador:', error);
-                });
+        let button;
+        // Função para alternar a atualização dos dados
+        function toggleAtualizacao() {
+            const button = document.querySelector('.button');
+            if (localStorage.getItem('conectado') === 'true') {
+                // Se já estiver conectado, desconecta
+                clearInterval(intervaloAtualizacao);
+                intervaloAtualizacao = null;
+                localStorage.setItem('conectado', 'false');
+                document.getElementById('btnConectar').textContent = 'Conectar';
+                button.classList.remove('conectado');
+                button.classList.add('desconectado');
+                window.location.reload(); // Adicione esta linha
+            } else {
+                // Se não estiver conectado, conecta
+                document.getElementById('btnConectar').textContent = 'Conectando...';
+                setTimeout(() => {
+                    carregarDados(); // Carrega os dados imediatamente ao iniciar
+                    intervaloAtualizacao = setInterval(carregarDados, 1000);
+                    localStorage.setItem('conectado', 'true');
+                    document.getElementById('btnConectar').textContent = 'Desconectar';
+                    button.classList.remove('desconectado');
+                    button.classList.add('conectado');
+                }, 1000);
+            }
+
+            console.log('Estado de conexão após a alternância:', localStorage.getItem('conectado') === 'true');
         }
 
 
-        // Função para alternar a atualização dos dados
-        function toggleAtualizacao() {
-    if (conectado) {
-        // Se já estiver conectado, desconecta
-        clearInterval(intervaloAtualizacao);
-        intervaloAtualizacao = null;
-        conectado = false; // Define o estado de conexão como falso
-        document.getElementById('btnConectar').textContent = 'Conectar';
-    } else {
-        // Se não estiver conectado, conecta
-        document.getElementById('btnConectar').textContent = 'Conectando...';
-        setTimeout(() => {
-            carregarDados(); // Carrega os dados imediatamente ao iniciar
-            intervaloAtualizacao = setInterval(carregarDados, 1000);
-            conectado = true; // Define o estado de conexão como verdadeiro
-            document.getElementById('btnConectar').textContent = 'Desconectar';
-        }, 1000);
-    }
-}
     </script>
 </body>
 

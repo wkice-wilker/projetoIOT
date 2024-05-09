@@ -23,12 +23,20 @@ app.get('/styles.css', (req, res) => {
     res.sendFile(__dirname + '/styles.css');
 });
 
-let contador = 0;
-
+// Rota para zerar o contador
 app.post('/zerarContador', (req, res) => {
-    contador = 0;
+    // Zerar as variáveis
+    fluxoAcumulado = 0;
+    metroCubico = 0;
+    contaDeAgua = 0;
+    calculoVazaoAcumulado = 0;
+    metroCubicoAcumulado = 0;
+    contaDeAguaAcumulada = 0;
+
+    // Enviar uma resposta para confirmar que o contador foi zerado
     res.send('Contador zerado com sucesso!');
 });
+
 
 // Rota para fornecer os dados simulados
 app.get('/dados', (req, res) => {
