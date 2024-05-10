@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <head>
     <meta charset="UTF-8">
@@ -11,15 +12,15 @@
 <body>
     <div class="fundo"></div>
     <div class="container-card">
-        <h1>Detecção de Vazamento de Água</h1>
-        
-            <!-- Contêiner para exibir os dados -->
-            <div class="dados" id="dadosContainer" style="display: none;">
-            </div>
-        
+        <h1>AquaSense</h1>
+
+        <!-- Contêiner para exibir os dados -->
+        <div class="dados" id="dadosContainer" style="display: none;">
+        </div>
 
 
-        <div class="container">
+
+        <div class="container" id="container" style="margin-top: 40rem;">
             <input id="checkbox" type="checkbox">
             <label class="button " for="checkbox" onclick="toggleAtualizacao()">
                 <span class="icon">
@@ -43,6 +44,7 @@
                     </svg>
                 </span>
                 <div class="botao" id="btnConectar" onclick="toggleAtualizacao()">Conectar</div>
+
             </label>
         </div>
 
@@ -50,8 +52,8 @@
 
         <!-- Histórico de dados -->
         <div id="historicoDados" style="display: none;">
-            <h2>Histórico de Alerta</h2>
-            <ul id="listaHistorico"></ul>
+            <h2 class="h2">Histórico de Alerta</h2>
+            <ul class="listaHistorico" id="listaHistorico"></ul>
 
 
         </div>
@@ -59,9 +61,9 @@
     <script>
         // Conteúdo do container.js e historico.js
 
-        let intervaloAtualizacao;
+
         let litrosPorMinuto = 0;
-        let conectado = false;
+
 
         const historico = []; // Define a variável historico aqui
 
@@ -72,22 +74,23 @@
                 .then(data => {
                     // Exibe os dados
                     document.getElementById('dadosContainer').innerHTML = `
-                    <p class="card"><span>${data.litrosPorMinuto}</span>Litros por Minuto
-                    <progress class="progress" max="10" value="${data.litrosPorMinuto}"></progress></p>
+                    <p class="card" style = "font-size: 17px;"><span style = "color: #000059; font-size: 25px;">${data.litrosPorMinuto} L /m</span>Litros por Minuto
+                    <progress class="progress" max="5" value="${data.litrosPorMinuto}"></progress></p>
 
-                    <p class="card"><span>${data.gastoTotalLitros}</span>Total Gasto em Litros 
-                    <progress max="100" value="${data.gastoTotalLitros}"></progress></p>
+                    <p class="card" style = "font-size: 17px;"><span style = "color: #000059; font-size: 25px;">${data.gastoTotalLitros} L</span>Total Gasto em Litros 
+                    <progress max="100"  value="${data.gastoTotalLitros}"></progress></p>
 
-                    <p class="card"><span>${data.metrosCubicosTotais}</span>Metros Cúbicos Totais 
-                    <progress max="100" value="${data.metrosCubicosTotais}"></progress></p>
+                    <p class="card" style = "font-size: 17px;"><span style = "color: #000059; font-size: 25px;">${data.metrosCubicosTotais} L /m³</span>Metros Cúbicos Totais 
+                    <progress max="100"  value="${data.metrosCubicosTotais}"></progress></p>
 
-                    <p class="card"><span>R$${data.custoAgua}</span>Custo Total de Água 
+                    <p class="card" style = "font-size: 17px;"><span style = "color: #000059; font-size: 25px;">R$${data.custoAgua}</span>Custo Total de Água 
                     <progress max="100" value="${data.custoAgua}"></progress></p>
                       
                     `;
 
                     // Exibe o contêiner
                     document.getElementById('dadosContainer').style.display = 'flex';
+                    document.getElementById('container').style.margin = "3rem 0 0 0";
 
                     // Se houver um alerta, adiciona ao histórico e armazena os dados
                     if (data.alerta) {
@@ -103,15 +106,15 @@
 
         // Função para armazenar os dados
         function armazenarDados(data) {
-            document.getElementById('historicoDados').style.display = 'block';
+            document.getElementById('historicoDados').style.display = 'flex';
             // Obtém a data e hora atual
             const now = new Date();
             // Formata a data e hora para exibição
             const timestamp = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-
             // Cria uma entrada para o histórico com as informações relevantes
             const historicoEntry = {
                 timestamp: timestamp,
+                litrosPorMinuto: data.litrosPorMinuto,
                 gastoTotalLitros: data.gastoTotalLitros,
                 metrosCubicosTotais: data.metrosCubicosTotais,
                 custoAgua: data.custoAgua,
@@ -123,6 +126,7 @@
             atualizarHistorico();
         }
 
+
         // Função para atualizar o histórico na interface
         function atualizarHistorico() {
             const listaHistorico = document.getElementById('listaHistorico');
@@ -133,47 +137,84 @@
             // Adiciona cada entrada do histórico à lista
             historico.forEach(entry => {
                 if (entry.alerta) {
-                    const alertaItem = document.createElement('li');
-                    alertaItem.textContent = `${entry.timestamp}: ${entry.alerta}`;
-                    listaAlertas.appendChild(alertaItem);
-                }
+                  
+                
                 const listItem = document.createElement('li');
-                listItem.textContent = ` Gasto Total Litros: ${entry.gastoTotalLitros}, Metros Cúbicos Totais: ${entry.metrosCubicosTotais}, Custo de Água: ${entry.custoAgua}`; // Aqui incluímos a mensagem de alerta
-                listItem.style.margin = '0px 0px 15px 0px';
+                
+                const alertaItem = document.createElement('span');
+                alertaItem.textContent = ` ${entry.alerta}`;
+
+                const alertaHora = document.createElement('span');
+                alertaHora.textContent = ` Data: ${entry.timestamp}`;
+
+                const litrosPorMinuto = document.createElement('span');
+                litrosPorMinuto.textContent = `Vazamento: ${entry.litrosPorMinuto} L/m`;
+
+                const gastoTotalLitrosElement = document.createElement('span');
+                gastoTotalLitrosElement.textContent = `Gasto Total Litros: ${entry.gastoTotalLitros} L`;
+
+                const metrosCubicosTotaisElement = document.createElement('span');
+                metrosCubicosTotaisElement.textContent = `Metros Cúbicos Totais: ${entry.metrosCubicosTotais} m³`;
+
+                const custoAguaElement = document.createElement('span');
+                custoAguaElement.textContent = `Custo Total de Água: R$ ${entry.custoAgua}`;
+
+                // Criar uma quebra de linha entre cada elemento
+                const br1 = document.createElement('br');
+                const br2 = document.createElement('br');
+                const br3 = document.createElement('br');
+                const br4 = document.createElement('br');
+                const br5 = document.createElement('br');
+                const br6 = document.createElement('br');
+
+                // Adicionar os elementos e quebras de linha ao listItem
+                listItem.appendChild(alertaItem);
+                listItem.appendChild(br1);
+                listItem.appendChild(br2);
+                listItem.appendChild(alertaHora);
+                listItem.appendChild(br3);
+                listItem.appendChild(litrosPorMinuto);
+                listItem.appendChild(br4);
+                listItem.appendChild(gastoTotalLitrosElement);
+                listItem.appendChild(br5);
+                listItem.appendChild(metrosCubicosTotaisElement);
+                listItem.appendChild(br6);
+                listItem.appendChild(custoAguaElement); listItem.style.margin = '0px 0px 15px 0px';
                 listaHistorico.appendChild(listItem);
                 // Se houver um alerta, adiciona ao histórico de alertas
+                }
 
             });
         }
 
-        let button;
+
+
+
+        let intervaloAtualizacao;
+
         // Função para alternar a atualização dos dados
         function toggleAtualizacao() {
-            const button = document.querySelector('.button');
-            if (localStorage.getItem('conectado') === 'true') {
-                // Se já estiver conectado, desconecta
+            if (intervaloAtualizacao) {
+                // Se já estiver atualizando, para a atualização
                 clearInterval(intervaloAtualizacao);
                 intervaloAtualizacao = null;
-                localStorage.setItem('conectado', 'false');
+
                 document.getElementById('btnConectar').textContent = 'Conectar';
-                button.classList.remove('conectado');
-                button.classList.add('desconectado');
-                window.location.reload(); // Adicione esta linha
+                window.location.reload();
             } else {
-                // Se não estiver conectado, conecta
+                // Exibe "Conectando" por 1 segundo antes de iniciar a atualização
                 document.getElementById('btnConectar').textContent = 'Conectando...';
                 setTimeout(() => {
                     carregarDados(); // Carrega os dados imediatamente ao iniciar
                     intervaloAtualizacao = setInterval(carregarDados, 1000);
-                    localStorage.setItem('conectado', 'true');
                     document.getElementById('btnConectar').textContent = 'Desconectar';
-                    button.classList.remove('desconectado');
-                    button.classList.add('conectado');
+
+
+
                 }, 1000);
             }
-
-            console.log('Estado de conexão após a alternância:', localStorage.getItem('conectado') === 'true');
         }
+
 
 
     </script>
