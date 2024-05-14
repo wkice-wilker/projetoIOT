@@ -1,3 +1,12 @@
+.logo {
+  width: 300px; /* Defina a largura desejada para a div */
+  height: 200px; /* Defina a altura desejada para a div */
+  background-image: url('http://127.0.0.1:4040/public/imagens/Logo.png');
+  background-size: cover; /* Ajusta a imagem para cobrir todo o espaço da div */
+  background-position: center; /* Centraliza a imagem dentro da div */
+}
+
+
 .card{
   display: flex;
   flex-direction: column;

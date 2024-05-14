@@ -1,4 +1,5 @@
 const express = require('express');
+app.use(express.static('public'));
 const app = express();
 const port = 80;
 
