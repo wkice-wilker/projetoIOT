@@ -1,8 +1,11 @@
 .logo {
-  width: 300px; /* Defina a largura desejada para a div */
-  height: 200px; /* Defina a altura desejada para a div */
-  background-image: url('http://127.0.0.1:4040/public/imagens/Logo.png');
-  background-size: cover; /* Ajusta a imagem para cobrir todo o espaço da div */
+  position: absolute;
+  top: 10%;
+  width: 350px; /* Defina a largura desejada para a div */
+  height: 350px; /* Defina a altura desejada para a div */
+  background-image: url('https://raw.githubusercontent.com/wkice-wilker/projetoIOT/main/public/imagens/Logo.png');
+  background-size:contain;
+  background-repeat: no-repeat;
   background-position: center; /* Centraliza a imagem dentro da div */
 }
 
