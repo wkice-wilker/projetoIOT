@@ -15,7 +15,9 @@
         <h1>AquaSense</h1>
 
         
-        <div class="logo"></div>
+        <div class="logo" id="logo"></div>
+        <div class="icone" id="icone" style="display: none;"></div>
+        <div class="logo-fundo"></div>
 
         
 
@@ -99,6 +101,8 @@
 
                     // Exibe o contêiner
                     document.getElementById('dadosContainer').style.display = 'flex';
+                    document.getElementById('icone').style.display = 'flex';
+                    document.getElementById('logo').style.display = 'none';
                     document.getElementById('container').style.margin = "3rem 0 0 0";
 
                     // Se houver um alerta, adiciona ao histórico e armazena os dados

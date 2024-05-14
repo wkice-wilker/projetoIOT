@@ -8,7 +8,30 @@
   background-repeat: no-repeat;
   background-position: center; /* Centraliza a imagem dentro da div */
 }
+.icone {
+  position: absolute;
+  top: 2%;
+  left: 18%;
+  width: 50px; /* Defina a largura desejada para a div */
+  height: 50px; /* Defina a altura desejada para a div */
+  background-image: url('https://raw.githubusercontent.com/wkice-wilker/projetoIOT/main/public/imagens/Logo.png');
+  background-size:contain;
+  background-repeat: no-repeat;
+  background-position: center; /* Centraliza a imagem dentro da div */
+}
 
+.logo-fundo {
+  position: fixed;
+  top: 7%;
+  left: -110%;
+  width: 950px; /* Defina a largura desejada para a div */
+  height: 950px; /* Defina a altura desejada para a div */
+  background-image: url('https://raw.githubusercontent.com/wkice-wilker/projetoIOT/main/public/imagens/logo-fundo.png');
+  background-size:contain;
+  background-repeat: no-repeat;
+  background-position: center; /* Centraliza a imagem dentro da div */
+  z-index: -1;
+}
 
 .card{
   display: flex;
@@ -23,8 +46,8 @@
   border-radius: 15px;
   text-align: center;
   background-color: #ffffff1c;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 5px ;
 
 }
@@ -38,8 +61,8 @@
   border-radius: 15px;
   list-style-type: none;
   background-color: #ffffff1c;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   font-size: 20px;
 }
 
@@ -174,7 +197,12 @@
     font-style: oblique;
     text-align: center;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    
   }
+  h1{
+    color: #02509d;
+  }
+
   h2 {
     font-size: 30px;
   }
