@@ -41,7 +41,7 @@ app.get('/dados', (req, res) => {
     metroCubico = fluxoAcumulado / 1000; // Metro cúbico com duas casas decimais
     console.log("Metro Cubico:", metroCubico);
 
-    contaDeAgua = metroCubico * 3.59; // Conta de água com duas casas decimais
+    contaDeAgua = metroCubico * 3.98; // Conta de água com duas casas decimais
     console.log("Conta de Agua:", contaDeAgua);
     
     const calculoVazaoMinuto = calculoVazao * 60 / 1000; // Litros por minuto
